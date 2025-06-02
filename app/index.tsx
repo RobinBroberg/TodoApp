@@ -1,8 +1,7 @@
 import { useTodos } from "@/contexts/TodosContext";
 import { useRouter } from "expo-router";
 import {
-  Button,
-  FlatList,
+  SectionList,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -17,38 +16,37 @@ export default function Home() {
     router.push(`/${item.id}`);
   };
 
+  const sections = [
+    {
+      title: "Todos",
+      data: todos.filter((todo: any) => !todo.done),
+    },
+    {
+      title: "Completed",
+      data: todos.filter((todo: any) => todo.done),
+    },
+  ];
+
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Todos</Text>
-
-      <FlatList
-        data={todos.filter((todo: any) => !todo.done)}
+      <SectionList
+        sections={sections}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => handleNavigate(item)}
             style={styles.todoItem}
           >
-            <Text style={styles.todoText}>{item.title}</Text>
+            <Text style={item.done ? styles.completedText : styles.todoText}>
+              {item.title}
+            </Text>
           </TouchableOpacity>
         )}
-      />
-
-      <Text style={styles.subHeading}>Completed</Text>
-
-      <FlatList
-        data={todos.filter((todo: any) => todo.done)}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.completedItem}>
-            <Text style={styles.completedText}>{item.title}</Text>
-          </View>
+        renderSectionHeader={({ section: { title } }) => (
+          <Text style={styles.sectionHeader}>{title}</Text>
         )}
+        contentContainerStyle={{ paddingBottom: 20 }}
       />
-
-      <View style={styles.buttonWrapper}>
-        <Button title="Add" onPress={() => router.push("/add")} />
-      </View>
     </View>
   );
 }
@@ -59,12 +57,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
-  heading: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 12,
-  },
-  subHeading: {
+  sectionHeader: {
     fontSize: 20,
     fontWeight: "600",
     marginTop: 24,
@@ -73,24 +66,15 @@ const styles = StyleSheet.create({
   todoItem: {
     padding: 12,
     backgroundColor: "#f0f0f0",
-    borderRadius: 8,
+    borderRadius: 12,
     marginVertical: 6,
   },
   todoText: {
     fontSize: 16,
   },
-  completedItem: {
-    padding: 12,
-    backgroundColor: "#e0e0e0",
-    borderRadius: 8,
-    marginVertical: 6,
-  },
   completedText: {
     fontSize: 16,
     textDecorationLine: "line-through",
     color: "#888",
-  },
-  buttonWrapper: {
-    marginTop: 30,
   },
 });
