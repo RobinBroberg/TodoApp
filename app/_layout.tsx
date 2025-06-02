@@ -14,6 +14,7 @@ export default function RootLayout() {
     <TodosProvider>
       <Stack
         screenOptions={{
+          headerBackTitle: "Back",
           headerStyle: {
             backgroundColor: "#1e3a8a",
           },
